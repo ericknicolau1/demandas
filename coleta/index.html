@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coleta de Classe - Educação Especial</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>COLETA DE CLASSE - EDUCAÇÃO ESPECIAL</h1>
+        <form id="classeForm">
+            <div class="form-row">
+                <label for="tipoSala">1- Informe o Tipo de Sala:</label>
+                <select id="tipoSala">
+                    <option value="">Selecione</option>
+                    <option value="Sala de Recurso">Sala de Recurso</option>
+                    <option value="Itinerante">Itinerante</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="tipoEnsino">2- Informe o Tipo de Ensino:</label>
+                <select id="tipoEnsino">
+                    <option value="">Selecione</option>
+                    <option value="DA">D.A</option>
+                    <option value="DF">D.F</option>
+                    <option value="DI">D.I</option>
+                    <option value="DV">D.V</option>
+                    <option value="TEA">TEA</option>
+                    <option value="Altas Habilidades/Superdotação">Altas Habilidades/Superdotação</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="turma">3- Informe a Turma:</label>
+                <input type="text" id="turma">
+            </div>
+            <div class="form-row">
+                <label for="turno">4- Informe o Turno:</label>
+                <select id="turno">
+                    <option value="">Selecione</option>
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>5- Horário da Aula:</label>
+                <table id="horarioAula">
+                    <thead>
+                        <tr>
+                            <th>Aula</th>
+                            <th>Dias</th>
+                            <th>Horário Início</th>
+                            <th>Horário Término</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1ª</td>
+                            <td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+                            <td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+                            <td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>2ª</td>
+                            <td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+                            <td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+                            <td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>3ª</td>
+                            <td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+                            <td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+                            <td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>4ª</td>
+                            <td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+                            <td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+                            <td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+                        </tr>
+                        <tr>
+                            <td>5ª</td>
+                            <td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+                            <td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+                            <td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-row">
+                <label for="tipoClasse">6- Tipo de Classe:</label>
+                <select id="tipoClasse">
+                    <option value="">Selecione</option>
+                    <option value="Educação Especial 2 aulas">Educação Especial 2 aulas</option>
+                    <option value="Educação Especial 4 aulas">Educação Especial 4 aulas</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="dataInicio">7- Data Início:</label>
+                <input type="date" id="dataInicio">
+            </div>
+            <div class="form-row">
+                <label>8- Atividade de Recurso:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="autonomiaAmbienteEscolar" name="atividadeRecurso" value="Autonomia no Ambiente Escolar">
+                        <label for="autonomiaAmbienteEscolar">Autonomia no Ambiente Escolar</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="informaticaAcessivel" name="atividadeRecurso" value="Informática Acessível">
+                        <label for="informaticaAcessivel">Informática Acessível</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="comunicacaoAlternativa" name="atividadeRecurso" value="Comunicação Alternativa e Aumentativa">
+                        <label for="comunicacaoAlternativa">Comunicação Alternativa e Aumentativa</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="linguaPortuguesaEscrita" name="atividadeRecurso" value="Língua Portuguesa na modalidade Escrita">
+                        <label for="linguaPortuguesaEscrita">Língua Portuguesa na modalidade Escrita</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="funcoesCognitivas" name="atividadeRecurso" value="Desenvolvimento de Funções Cognitivas">
+                        <label for="funcoesCognitivas">Desenvolvimento de Funções Cognitivas</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="processosMentais" name="atividadeRecurso" value="Desenvolvimento de Processos Mentais">
+                        <label for="processosMentais">Desenvolvimento de Processos Mentais</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="vidaAutonoma" name="atividadeRecurso" value="Desenvolvimento de Vida Autónoma">
+                        <label for="vidaAutonoma">Desenvolvimento de Vida Autónoma</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="linguaPortuguesaSegunda" name="atividadeRecurso" value="Ensino da Língua Portuguesa como segunda lingua">
+                        <label for="linguaPortuguesaSegunda">Ensino da Língua Portuguesa como segunda língua</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="estrategiasEnriquecimento" name="atividadeRecurso" value="Estratégias e Enriquecimento Curricular">
+                        <label for="estrategiasEnriquecimento">Estratégias e Enriquecimento Curricular</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="orientacaoMobilidade" name="atividadeRecurso" value="Orientação e Mobilidade">
+                        <label for="orientacaoMobilidade">Orientação e Mobilidade</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="recursosOpticos" name="atividadeRecurso" value="Recursos ópticos e não ópticos">
+                        <label for="recursosOpticos">Recursos ópticos e não ópticos</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="sistemaBraile" name="atividadeRecurso" value="Sistema Braile">
+                        <label for="sistemaBraile">Sistema Braile</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="soroban" name="atividadeRecurso" value="Soroban">
+                        <label for="soroban">Soroban</label>
+                    </div>
+                </div>
+            </div>
+             <div class="form-row">
+                 <label for="numeroSala">9- Número da Sala:</label>
+                 <input type="text" id="numeroSala" maxlength="9">
+             </div>
+             <div class="form-row">
+                 <label for="observacoes">Observações:</label>
+                 <textarea id="observacoes"></textarea>
+             </div>
+             <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+         </form>
+     </div>
+     <script src="script.js"></script>
+ </body>
+ <footer>
+    <div class="footer-bottom">
+        <p>Desenvolvido pela equipe CIE Franca</p>
+    </div>
+</footer>  
+ </html>
