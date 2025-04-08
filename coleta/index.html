@@ -2,8 +2,177 @@
 <html>
 <head>
     <title>Coleta de Classe - Educação Especial</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+/* Estilos Gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #E6F1FB; /* Azul claro */
+    color: #333;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #1A4C7A;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Layout dos campos de formulário */
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Reduz espaço entre label e input */
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 2px;
+}
+
+.form-row input, 
+.form-row select, 
+.form-row textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #F9F9F9;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.form-row input:focus, 
+.form-row select:focus, 
+.form-row textarea:focus {
+    border-color: #1A4C7A;
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 76, 122, 0.5);
+}
+
+/* Estilo para tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+}
+
+table th {
+    background: #1A4C7A;
+    color: white;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background: #F1F9FF;
+}
+
+/* Botões */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #1A4C7A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #155A8A;
+}
+
+/* Ajustes na exibição dos checkboxes */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px 20px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    white-space: normal;
+    text-align: left;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin: 0; /* Remove a margem padrão */
+    padding: 0; /* Remove o padding padrão */
+    transform: scale(1);
+    /* Ajustes adicionais para reduzir o espaço ocupado pelo checkbox */
+    width: 16px; /* Ajuste conforme necessário */
+    height: 16px; /* Ajuste conforme necessário */
+}
+
+/* Opcional: ajustar o espaço entre o checkbox e o rótulo */
+.checkbox-container label {
+    margin-left: -2px; /* Ajuste conforme necessário */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    table th, table td {
+        font-size: 14px;
+    }
+    .checkbox-group {
+        grid-template-columns: 1fr; /* Coloca os checkboxes em uma única coluna em telas pequenas */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
+    .form-row input, 
+    .form-row select, 
+    .form-row textarea {
+        font-size: 14px;
+    }
+}
+footer {
+    background-color: #f0f0f0; /* Cor de fundo levemente cinza */
+    padding: 10px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #666; /* Cor do texto cinza escuro */
+    border-top: 1px solid #ddd; /* Linha sutil no topo */
+}
+
+.footer-bottom p {
+    margin: 0; /* Remove a margem padrão do parágrafo */
+}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -166,11 +335,229 @@
              <button type="button" onclick="gerarPDF()">Gerar PDF</button>
          </form>
      </div>
-     <script src="script.js"></script>
- </body>
- <footer>
-    <div class="footer-bottom">
-        <p>Desenvolvido pela equipe CIE Franca</p>
-    </div>
-</footer>  
- </html>
+     <footer>
+        <div class="footer-bottom">
+            <p>Desenvolvido pela equipe CIE Franca</p>
+        </div>
+    </footer>  
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const turnoSelect = document.getElementById('turno');
+    const horarioAulaTable = document.getElementById('horarioAula');
+
+    function populateTimeSelects(row) {
+        const horaInicioSelect = row.querySelector('.horaInicio');
+        const minutoInicioSelect = row.querySelector('.minutoInicio');
+        const horaTerminoSelect = row.querySelector('.horaTermino');
+        const minutoTerminoSelect = row.querySelector('.minutoTermino');
+
+        if (horaInicioSelect && minutoInicioSelect && horaTerminoSelect && minutoTerminoSelect) {
+            horaInicioSelect.innerHTML = '<option value="">Selecione</option>';
+            horaTerminoSelect.innerHTML = '<option value="">Selecione</option>';
+            minutoInicioSelect.innerHTML = '<option value="">Selecione</option>';
+            minutoTerminoSelect.innerHTML = '<option value="">Selecione</option>';
+
+            const turno = turnoSelect.value;
+            let startHour = turno === 'Manhã' ? 6 : 12;
+            const endHour = turno === 'Manhã' ? 14 : 19;
+
+            for (let i = startHour; i < endHour; i++) {
+                const formattedHour = String(i).padStart(2, '0');
+                horaInicioSelect.innerHTML += `<option value="${formattedHour}">${formattedHour}</option>`;
+                horaTerminoSelect.innerHTML += `<option value="${formattedHour}">${formattedHour}</option>`;
+            }
+
+            for (let i = 0; i < 60; i++) {
+                const formattedMinute = String(i).padStart(2, '0');
+                minutoInicioSelect.innerHTML += `<option value="${formattedMinute}">${formattedMinute}</option>`;
+                minutoTerminoSelect.innerHTML += `<option value="${formattedMinute}">${formattedMinute}</option>`;
+            }
+        }
+    }
+
+    turnoSelect.addEventListener('change', function() {
+        const rows = horarioAulaTable.querySelectorAll('tbody tr');
+        rows.forEach(populateTimeSelects);
+    });
+
+    const rows = horarioAulaTable.querySelectorAll('tbody tr');
+    rows.forEach(populateTimeSelects);
+});
+
+function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurações
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 10;
+    const contentWidth = pageWidth - (margin * 2);
+    const rowHeight = 10;
+    const headerColor = '#04456D'; // Azul claro
+    let y = margin;
+
+    // Função auxiliar para criar cabeçalhos azuis
+    function criarCabecalho(texto, posY) {
+        doc.setFillColor(headerColor);
+        doc.rect(margin, posY, contentWidth, rowHeight, 'F');
+        doc.setTextColor(255, 255, 255); // Texto branco
+        doc.setFontSize(12);
+        doc.text(texto, pageWidth / 2, posY + rowHeight - 2, { align: 'center' });
+        doc.setTextColor(0, 0, 0); // Volta para texto preto
+        return posY + rowHeight;
+    }
+
+    // Função auxiliar para criar campos de formulário
+    function criarCampo(texto, valor, posY, fullWidth = false, secondField = null, secondValue = null) {
+        const fieldWidth = fullWidth ? contentWidth : contentWidth / 2 - 2;
+        
+        // Primeiro campo
+        doc.setFontSize(10);
+        doc.setFillColor(230, 230, 230);
+        doc.rect(margin, posY, fieldWidth, rowHeight, 'F');
+        doc.setFontSize(10);
+        doc.text(texto, margin + 2, posY + rowHeight - 2);
+        
+        // Valor do primeiro campo
+        doc.setFillColor(255, 255, 255);
+        doc.rect(margin, posY + rowHeight, fieldWidth, rowHeight, 'F');
+        doc.text(valor || '', margin + 2, posY + rowHeight * 2 - 2);
+        
+        // Se houver segundo campo
+        if (!fullWidth && secondField) {
+            const secondX = margin + fieldWidth + 4;
+            
+            // Segundo campo
+            doc.setFillColor(230, 230, 230);
+            doc.rect(secondX, posY, fieldWidth, rowHeight, 'F');
+            doc.text(secondField, secondX + 2, posY + rowHeight - 2);
+            
+            // Valor do segundo campo
+            doc.setFillColor(255, 255, 255);
+            doc.rect(secondX, posY + rowHeight, fieldWidth, rowHeight, 'F');
+            doc.text(secondValue || '', secondX + 2, posY + rowHeight * 2 - 2);
+        }
+        
+        return posY + rowHeight * 2;
+    }
+
+    // Título
+    y = criarCabecalho('COLETA DE CLASSE - EDUCAÇÃO ESPECIAL', y);
+    
+    // 1. Tipo de Sala
+    y = criarCampo('1. Informe o Tipo de Sala', document.getElementById('tipoSala').value, y, true);
+    
+    // 2. Tipo de Ensino e 3. Turma (lado a lado)
+    y = criarCampo('2. Informe o Tipo de Ensino', document.getElementById('tipoEnsino').value, y, false, 
+                   '3. Informe a Turma', document.getElementById('turma').value);
+    
+    // 4. Turno
+    y = criarCampo('4. Informe o Turno', document.getElementById('turno').value, y, true);
+    
+    // 5. Horário da Aula
+    y = criarCabecalho('5. Horário da Aula', y);
+    
+    // Tabela de horários
+    const colunas = ['Aula', 'Dias', 'Horário Início', 'Horário Término'];
+    const colWidths = [contentWidth * 0.1, contentWidth * 0.3, contentWidth * 0.3, contentWidth * 0.3];
+    
+    // Cabeçalho da tabela
+    let currentX = margin;
+    doc.setFillColor(240, 240, 240);
+    for (let i = 0; i < colunas.length; i++) {
+        doc.rect(currentX, y, colWidths[i], rowHeight, 'F');
+        doc.text(colunas[i], currentX + colWidths[i]/2, y + rowHeight - 2, { align: 'center' });
+        currentX += colWidths[i];
+    }
+    y += rowHeight;
+    
+    // Linhas da tabela
+    const rows = document.querySelectorAll('#horarioAula tbody tr');
+    rows.forEach((row, index) => {
+        currentX = margin;
+        const dia = row.querySelector('.diaSemana').value || '';
+        const horaInicio = row.querySelector('.horaInicio').value || '';
+        const minutoInicio = row.querySelector('.minutoInicio').value || '';
+        const horaTermino = row.querySelector('.horaTermino').value || '';
+        const minutoTermino = row.querySelector('.minutoTermino').value || '';
+        
+        const horarioInicio = `${horaInicio}:${minutoInicio}`;
+        const horarioTermino = `${horaTermino}:${minutoTermino}`;
+        
+        const rowData = [`${index + 1}ª`, dia, horarioInicio, horarioTermino];
+        
+        for (let i = 0; i < rowData.length; i++) {
+            doc.rect(currentX, y, colWidths[i], rowHeight);
+            doc.text(rowData[i], currentX + colWidths[i]/2, y + rowHeight - 2, { align: 'center' });
+            currentX += colWidths[i];
+        }
+        y += rowHeight;
+    });
+    
+    // 6. Tipo de Classe e 7. Data Início
+    y += 2; // Pequeno espaço
+    y = criarCampo('6. Tipo de Classe', document.getElementById('tipoClasse').value, y, false,
+                   '7. Data Início', document.getElementById('dataInicio').value);
+    
+   // 8. Atividade de Recurso
+   y = criarCabecalho('8. Atividade de Recurso', y);
+
+   const atividades = document.querySelectorAll('input[name="atividadeRecurso"]');
+   const atividadesSelecionadas = Array.from(atividades).filter(atividade => atividade.checked);
+
+   if (atividadesSelecionadas.length > 0) {
+       const atividadesPorColuna = Math.ceil(atividadesSelecionadas.length / 2);
+       const colWidth = contentWidth / 2;
+
+       for (let i = 0; i < atividadesPorColuna; i++) {
+           // Primeira coluna
+           if (i < atividadesSelecionadas.length) {
+               doc.setFillColor(255, 255, 255); // Garante o preenchimento branco
+               doc.rect(margin, y, colWidth, rowHeight, 'F');
+               doc.text(atividadesSelecionadas[i].value, margin + 2, y + rowHeight - 2);
+           }
+
+           // Segunda coluna
+           const segundoIndice = i + atividadesPorColuna;
+           if (segundoIndice < atividadesSelecionadas.length) {
+               doc.setFillColor(255, 255, 255); // Garante o preenchimento branco
+               doc.rect(margin + colWidth, y, colWidth, rowHeight, 'F');
+               doc.text(atividadesSelecionadas[segundoIndice].value, margin + colWidth + 2, y + rowHeight - 2);
+           }
+
+           y += rowHeight;
+       }
+   } else {
+       doc.setFillColor(255, 255, 255); // Garante o preenchimento branco
+       doc.rect(margin, y, contentWidth, rowHeight, 'F');
+       y += rowHeight;
+   }
+    
+    // 9. Número da Sala
+    y += 2; // Pequeno espaço
+    y = criarCabecalho('9. Número da Sala', y);
+    
+    // Campo do número da sala
+    doc.setFillColor(255, 255, 255);
+    doc.rect(margin, y, contentWidth, rowHeight, 'F');
+    doc.text(document.getElementById('numeroSala').value, margin + 2, y + rowHeight - 2);
+    y += rowHeight;
+    
+    // Observações
+    y += 2; // Pequeno espaço
+    y = criarCabecalho('Observações', y);
+    
+    // Campo de texto para observações
+    doc.setFillColor(255, 255, 255);
+    doc.rect(margin, y, contentWidth, rowHeight * 2, 'F');
+    doc.text(document.getElementById('observacoes').value, margin + 2, y + rowHeight - 2);
+    y += rowHeight * 2 + 2;
+    
+    // Rodapé
+    
+    
+    doc.save('coleta_classe.pdf');
+}
+    </script>
+</body>
+</html>
