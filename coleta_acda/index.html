@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Coleta de Classe - ACDA</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<style>/* Estilos Gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #E6F1FB; /* Azul claro */
+    color: #333;
+    line-height: 1.6;
+}
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+    color: #1A4C7A;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E6F1FB;
+}
+/* Layout dos campos de formulário */
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.form-row:last-child {
+    border-bottom: none;
+}
+.form-row label {
+    font-weight: bold;
+    color: #1A4C7A;
+    margin-bottom: 4px;
+}
+.form-row input, 
+.form-row select, 
+.form-row textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #F9F9F9;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+.form-row input:focus, 
+.form-row select:focus, 
+.form-row textarea:focus {
+    border-color: #1A4C7A;
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 76, 122, 0.5);
+}
+/* Estilo específico para selects */
+#modalidade, #genero {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #F9F9F9;
+    transition: all 0.3s ease;
+}
+#modalidade:focus, #genero:focus {
+    border-color: #1A4C7A;
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 76, 122, 0.5);
+}
+/* Estilo para tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+table th {
+    background: #1A4C7A;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+table td select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+table tr:nth-child(even) {
+    background: #F1F9FF;
+}
+/* Botões */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #1A4C7A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    margin-top: 20px;
+}
+button:hover {
+    background: #155A8A;
+    transform: translateY(-2px);
+}
+button:active {
+    transform: translateY(0);
+}
+/* Ajustes na exibição dos checkboxes */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px 20px;
+    padding: 10px 0;
+}
+/* Estilos para grupos de checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+.checkbox-container input[type="checkbox"] {
+    margin: 0;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+.checkbox-container label {
+    font-weight: normal;
+    margin: 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+/* Estilização específica para as novas seções */
+#dataInicio {
+    max-width: 200px;
+}
+#numeroSala {
+    max-width: 200px;
+}
+textarea#observacoes {
+    min-height: 100px;
+    resize: vertical;
+}
+/* Responsividade */
+@media (max-width: 900px) {
+    .checkbox-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    table th, table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 10px;
+    }
+    button {
+        padding: 12px;
+        font-size: 14px;
+    }
+    .form-row input, 
+    .form-row select, 
+    .form-row textarea {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+/* Estilo para o footer */
+footer {
+    margin-top: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+.footer-bottom {
+    padding: 10px;
+    background-color: #1A4C7A;
+    color: white;
+    border-radius: 6px;
+}
+
+/* Estilos para selects de horário */
+.horaInicio, .minutoInicio, .horaTermino, .minutoTermino {
+    width: auto !important;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+/* Ajuste para tabela de horários */
+#horarioAula td {
+    text-align: center;
+}
+#horarioAula select {
+    min-width: 80px;
+}
+</style></head>
+<body>
+<div class="container">
+<h1>COLETA DE CLASSE - ATIVIDADES CURRICULARES DESPORTIVAS E ARTÍSTICAS (ACDA)</h1>
+<form id="classeForm">
+<div class="form-row">
+<label for="tipoEnsino">1- Tipo de Ensino:</label>
+<select id="tipoEnsino">
+<option value="ATIVIDADES CURRICULARES DESPORTIVAS E ARTÍSTICAS (ACDA)">ATIVIDADES CURRICULARES DESPORTIVAS E ARTÍSTICAS (ACDA)</option>
+</select>
+</div>
+<div class="form-row">
+<label for="serie">2- Série:</label>
+<input id="serie" type="text"/>
+</div>
+<div class="form-row">
+<label for="turma">3- Turma:</label>
+<input id="turma" type="text"/>
+</div>
+<div class="form-row">
+<label for="turno">4- Turno:</label>
+<select id="turno">
+<option value="">Selecione</option>
+<option value="Manhã">Manhã</option>
+<option value="Tarde">Tarde</option>
+<option value="Noite">Noite</option>
+</select>
+</div>
+<div class="form-row">
+<label>5- Horário da Aula:</label>
+<table id="horarioAula">
+<thead>
+<tr>
+<th>Aula</th>
+<th>Dias</th>
+<th>Horário Início</th>
+<th>Horário Término</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1ª</td>
+<td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+<td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+<td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+</tr>
+<tr>
+<td>2ª</td>
+<td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+<td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+<td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+</tr>
+<tr>
+<td>3ª</td>
+<td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+<td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+<td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+</tr>
+<tr>
+<td>4ª</td>
+<td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+<td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+<td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+</tr>
+<tr>
+<td>5ª</td>
+<td><select class="diaSemana"><option value="">Selecione</option><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option></select></td>
+<td><select class="horaInicio"><option value="">Selecione</option></select>:<select class="minutoInicio"><option value="">Selecione</option></select></td>
+<td><select class="horaTermino"><option value="">Selecione</option></select>:<select class="minutoTermino"><option value="">Selecione</option></select></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="form-row">
+<label for="tipoClasse">6- Tipo de Classe:</label>
+<select id="tipoClasse">
+<option value="">Selecione</option>
+<option value="Inova">Inova</option>
+<option value="Alto rendimento Esportivo">Alto rendimento Esportivo</option>
+</select>
+</div>
+<div class="form-row">
+<label for="dataInicio">7- Data Início:</label>
+<input id="dataInicio" type="date"/>
+</div>
+<div class="form-row">
+<label for="categoria">8- Categoria:</label>
+<select id="categoria" name="categoria">
+<option value="">Selecione</option>
+<option value="Infantil">Infantil</option>
+<option value="Juvenil">Juvenil</option>
+<option value="Mirim">Mirim</option>
+<option value="Pré-Mirim">Pré-Mirim</option>
+</select>
+</div>
+<div class="form-row">
+<label for="modalidade">9- Modalidade:</label>
+<select id="modalidade" name="modalidade">
+<option value="">Selecione</option>
+<option value="ATLETISMO">ATLETISMO</option>
+<option value="BADMINGTON">BADMINGTON</option>
+<option value="BALLET">BALLET</option>
+<option value="BANDA">BANDA</option>
+<option value="BASQUETEBOL">BASQUETEBOL</option>
+<option value="BOXE">BOXE</option>
+<option value="CANTO">CANTO</option>
+<option value="CAPOEIRA">CAPOEIRA</option>
+<option value="CICLISMO">CICLISMO</option>
+<option value="CINEMA">CINEMA</option>
+<option value="DAMAS">DAMAS</option>
+<option value="DANÇA CLASSICA">DANÇA CLASSICA</option>
+<option value="DANÇA ESTRANGEIRA">DANÇA ESTRANGEIRA</option>
+<option value="DANÇAS BRASILEIRAS">DANÇAS BRASILEIRAS</option>
+<option value="DANÇAS CONTEMPORÂNEAS">DANÇAS CONTEMPORÂNEAS</option>
+<option value="DANÇAS DE SALÃO">DANÇAS DE SALÃO</option>
+<option value="DANÇAS TRADICIONAIS">DANÇAS TRADICIONAIS</option>
+<option value="DANÇAS URBANAS">DANÇAS URBANAS</option>
+<option value="DESENHO">DESENHO</option>
+<option value="ESCULTURA">ESCULTURA</option>
+<option value="FANFARRA">FANFARRA</option>
+<option value="FOTOGRAFIA">FOTOGRAFIA</option>
+<option value="FUTSAL">FUTSAL</option>
+<option value="GINASTICA ARTISTICA">GINASTICA ARTISTICA</option>
+<option value="GINÁSTICA DE CONDICIONAMENTO FÍSICO">GINÁSTICA DE CONDICIONAMENTO FÍSICO</option>
+<option value="GINÁSTICA DE CONSCIENTIZAÇÃO CORPORAL">GINÁSTICA DE CONSCIENTIZAÇÃO CORPORAL</option>
+<option value="GINASTICA GERAL">GINASTICA GERAL</option>
+<option value="GINASTICA RITMICA">GINASTICA RITMICA</option>
+<option value="HANDEBOL">HANDEBOL</option>
+<option value="INSTRUMENTOS">INSTRUMENTOS</option>
+<option value="JUDO">JUDO</option>
+<option value="KARATE">KARATE</option>
+<option value="KUNG FU">KUNG FU</option>
+<option value="NATACAO">NATACAO</option>
+<option value="PERCUSSÃO CORPORAL">PERCUSSÃO CORPORAL</option>
+<option value="PINTURA">PINTURA</option>
+<option value="RUGBY">RUGBY</option>
+<option value="TAEKWONDO">TAEKWONDO</option>
+<option value="TCHOUKBALL">TCHOUKBALL</option>
+<option value="TEATRO">TEATRO</option>
+<option value="TÊNIS">TÊNIS</option>
+<option value="TENIS DE MESA">TENIS DE MESA</option>
+<option value="VOLEI DE PRAIA">VOLEI DE PRAIA</option>
+<option value="VOLEIBOL">VOLEIBOL</option>
+<option value="XADREZ">XADREZ</option>
+</select>
+</div>
+<div class="form-row">
+<label for="genero">10- Gênero:</label>
+<select id="genero" name="genero">
+<option value="">Selecione</option>
+<option value="Masculino">Masculino</option>
+<option value="Feminino">Feminino</option>
+<option value="Mista">Mista</option>
+</select>
+</div>
+<div class="form-row">
+<label for="numeroSala">11- Número da Sala:</label>
+<input id="numeroSala" maxlength="9" type="text"/>
+</div>
+<div class="form-row">
+<label for="observacoes">Observações:</label>
+<textarea id="observacoes"></textarea>
+</div>
+<button onclick="gerarPDF()" type="button">Gerar PDF</button>
+</form>
+</div>
+
+<footer>
+<div class="footer-bottom">
+<p>Desenvolvido pela equipe CIE Franca</p>
+</div>
+</footer>
+<script>document.addEventListener('DOMContentLoaded', function() {
+    const turnoSelect = document.getElementById('turno');
+    const horarioAulaTable = document.getElementById('horarioAula');
+
+    // Função para preencher os selects de hora e minuto
+    function populateTimeSelects(row) {
+        const horaInicioSelect = row.querySelector('.horaInicio');
+        const minutoInicioSelect = row.querySelector('.minutoInicio');
+        const horaTerminoSelect = row.querySelector('.horaTermino');
+        const minutoTerminoSelect = row.querySelector('.minutoTermino');
+
+        // Limpa e preenche as opções de hora
+        if (horaInicioSelect && horaTerminoSelect) {
+            horaInicioSelect.innerHTML = '<option value="">Hora</option>';
+            horaTerminoSelect.innerHTML = '<option value="">Hora</option>';
+            
+            const turno = turnoSelect.value;
+            let startHour, endHour;
+            
+            if (turno === 'Manhã') {
+                startHour = 6;
+                endHour = 14;
+            } else if (turno === 'Tarde') {
+                startHour = 12;
+                endHour = 19;
+            } else if (turno === 'Noite') {
+                startHour = 18;
+                endHour = 23;
+            } else {
+                // Se nenhum turno foi selecionado, usar um intervalo padrão
+                startHour = 7;
+                endHour = 22;
+            }
+
+            for (let i = startHour; i <= endHour; i++) {
+                const formattedHour = String(i).padStart(2, '0');
+                horaInicioSelect.innerHTML += `<option value="${formattedHour}">${formattedHour}</option>`;
+                horaTerminoSelect.innerHTML += `<option value="${formattedHour}">${formattedHour}</option>`;
+            }
+        }
+
+        // Limpa e preenche as opções de minuto
+        if (minutoInicioSelect && minutoTerminoSelect) {
+            minutoInicioSelect.innerHTML = '<option value="">Min</option>';
+            minutoTerminoSelect.innerHTML = '<option value="">Min</option>';
+            
+            // Adicionar minutos de 5 em 5
+            for (let i = 0; i < 60; i += 5) {
+                const formattedMinute = String(i).padStart(2, '0');
+                minutoInicioSelect.innerHTML += `<option value="${formattedMinute}">${formattedMinute}</option>`;
+                minutoTerminoSelect.innerHTML += `<option value="${formattedMinute}">${formattedMinute}</option>`;
+            }
+            // Certificar que 00 está incluso
+            if (!minutoInicioSelect.querySelector('option[value="00"]')) {
+                minutoInicioSelect.innerHTML = '<option value="">Min</option><option value="00">00</option>' + minutoInicioSelect.innerHTML;
+                minutoTerminoSelect.innerHTML = '<option value="">Min</option><option value="00">00</option>' + minutoTerminoSelect.innerHTML;
+            }
+        }
+    }
+
+    // Preencher os selects quando o turno é alterado
+    turnoSelect.addEventListener('change', function() {
+        const rows = horarioAulaTable.querySelectorAll('tbody tr');
+        rows.forEach(populateTimeSelects);
+    });
+
+    // Preencher os selects na carga inicial da página
+    const rows = horarioAulaTable.querySelectorAll('tbody tr');
+    rows.forEach(populateTimeSelects);
+});
+
+// Função para gerar o PDF
+function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurações
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 10;
+    const contentWidth = pageWidth - (margin * 2);
+    const rowHeight = 10;
+    const primaryColor = '#04456D'; // Azul escuro corporativo
+    const secondaryColor = '#04456D'; // Azul médio para subtítulos
+    let y = margin;
+
+    // Adicionar logo ou cabeçalho
+    doc.setFillColor(primaryColor);
+    doc.rect(0, 0, pageWidth, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12); // Reduced font size to fit better
+    doc.setFont('helvetica', 'bold');
+    doc.text('COLETA DE CLASSE - ATIVIDADES CURRICULARES DESPORTIVAS E ARTÍSTICAS (ACDA)', pageWidth / 2, 15, { align: 'center' });
+
+    y = 35; // Espaço após o cabeçalho
+
+    // Função auxiliar para criar cabeçalhos de seção
+    function criarCabecalhoSecao(texto, posY) {
+        doc.setFillColor(secondaryColor);
+        doc.rect(margin, posY, contentWidth, rowHeight, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.text(texto, margin + 3, posY + rowHeight - 2);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        return posY + rowHeight;
+    }
+
+    // Função auxiliar para criar rótulos e valores
+    function criarCampo(rotulo, valor, posY, larguraRotulo = 40) {
+        doc.setFillColor(240, 240, 240);
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(margin, posY, larguraRotulo, rowHeight, 'FD');
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(60, 60, 60);
+        doc.text(rotulo, margin + 2, posY + rowHeight - 2);
+        
+        doc.setFillColor(255, 255, 255);
+        doc.rect(margin + larguraRotulo, posY, contentWidth - larguraRotulo, rowHeight, 'FD');
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        doc.text(valor || '—', margin + larguraRotulo + 2, posY + rowHeight - 2);
+        
+        return posY + rowHeight;
+    }
+
+    // Função auxiliar para criar campos em duas colunas
+    function criarCamposDuplos(rotulo1, valor1, rotulo2, valor2, posY) {
+        const colWidth = contentWidth / 2 - 2;
+        
+        // Primeiro campo
+        doc.setFillColor(240, 240, 240);
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(margin, posY, 40, rowHeight, 'FD');
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(60, 60, 60);
+        doc.text(rotulo1, margin + 2, posY + rowHeight - 2);
+        
+        doc.setFillColor(255, 255, 255);
+        doc.rect(margin + 40, posY, colWidth - 40 + 2, rowHeight, 'FD');
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        doc.text(valor1 || '—', margin + 42, posY + rowHeight - 2);
+        
+        // Segundo campo
+        doc.setFillColor(240, 240, 240);
+        doc.rect(margin + colWidth + 4, posY, 40, rowHeight, 'FD');
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(60, 60, 60);
+        doc.text(rotulo2, margin + colWidth + 6, posY + rowHeight - 2);
+        
+        doc.setFillColor(255, 255, 255);
+        doc.rect(margin + colWidth + 44, posY, colWidth - 40, rowHeight, 'FD');
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        doc.text(valor2 || '—', margin + colWidth + 46, posY + rowHeight - 2);
+        
+        return posY + rowHeight;
+    }
+    
+    // Informações Básicas
+    y = criarCabecalhoSecao('INFORMAÇÕES BÁSICAS', y);
+    y = criarCampo('Tipo de Ensino:', document.getElementById('tipoEnsino').value, y, 40);
+    y = criarCamposDuplos('Série:', document.getElementById('serie').value, 'Turma:', document.getElementById('turma').value, y);
+    y = criarCampo('Turno:', document.getElementById('turno').value, y, 40);
+    
+    // Horário da Aula
+    y += 5; // Espaço adicional
+    y = criarCabecalhoSecao('HORÁRIO DA AULA', y);
+    
+    // Cabeçalho da tabela de horários
+    const colunas = ['Aula', 'Dia', 'Hora Início', 'Hora Término'];
+    const colWidths = [contentWidth * 0.1, contentWidth * 0.3, contentWidth * 0.3, contentWidth * 0.3];
+    
+    doc.setFillColor(primaryColor);
+    doc.setDrawColor(80, 80, 80);
+    
+    let currentX = margin;
+    for (let i = 0; i < colunas.length; i++) {
+        doc.rect(currentX, y, colWidths[i], rowHeight, 'FD');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text(colunas[i], currentX + colWidths[i]/2, y + rowHeight - 2, { align: 'center' });
+        currentX += colWidths[i];
+    }
+    y += rowHeight;
+    
+    // Linhas da tabela de horários
+    const rows = document.querySelectorAll('#horarioAula tbody tr');
+    let rowAdded = false;
+    
+    rows.forEach((row, index) => {
+        const dia = row.querySelector('.diaSemana').value || '';
+        const horaInicio = row.querySelector('.horaInicio').value || '';
+        const minutoInicio = row.querySelector('.minutoInicio').value || '';
+        const horaTermino = row.querySelector('.horaTermino').value || '';
+        const minutoTermino = row.querySelector('.minutoTermino').value || '';
+        
+        // Verificar se pelo menos o dia está preenchido
+        if (dia) {
+            rowAdded = true;
+            currentX = margin;
+            
+            const aulaNumero = `${index + 1}ª`;
+            const horarioInicio = horaInicio && minutoInicio ? `${horaInicio}:${minutoInicio}` : '—';
+            const horarioTermino = horaTermino && minutoTermino ? `${horaTermino}:${minutoTermino}` : '—';
+            
+            const rowData = [aulaNumero, dia, horarioInicio, horarioTermino];
+            
+            // Alternar cores de fundo para melhorar legibilidade
+            const rowColor = index % 2 === 0 ? 255 : 245;
+            
+            for (let i = 0; i < rowData.length; i++) {
+                doc.setFillColor(rowColor, rowColor, rowColor);
+                doc.rect(currentX, y, colWidths[i], rowHeight, 'FD');
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text(rowData[i], currentX + colWidths[i]/2, y + rowHeight - 2, { align: 'center' });
+                currentX += colWidths[i];
+            }
+            y += rowHeight;
+        }
+    });
+    
+    // Se nenhuma linha foi adicionada, adicionar uma linha vazia
+    if (!rowAdded) {
+        currentX = margin;
+        for (let i = 0; i < colunas.length; i++) {
+            doc.setFillColor(255, 255, 255);
+            doc.rect(currentX, y, colWidths[i], rowHeight, 'FD');
+            doc.text('—', currentX + colWidths[i]/2, y + rowHeight - 2, { align: 'center' });
+            currentX += colWidths[i];
+        }
+        y += rowHeight;
+    }
+    
+    // Informações da Classe
+    y += 5; // Espaço adicional
+    y = criarCabecalhoSecao('INFORMAÇÕES DA CLASSE', y);
+    y = criarCampo('Tipo de Classe:', document.getElementById('tipoClasse').value, y, 40);
+    
+    // Converter data de YYYY-MM-DD para DD/MM/YYYY
+    let dataInicio = document.getElementById('dataInicio').value;
+    if (dataInicio) {
+        const partes = dataInicio.split('-');
+        if (partes.length === 3) {
+            dataInicio = `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+    }
+    y = criarCampo('Data Início:', dataInicio, y, 40);
+    
+    // Categoria, Modalidade e Gênero
+    y = criarCampo('Categoria:', document.getElementById('categoria').value, y, 40);
+    y = criarCampo('Modalidade:', document.getElementById('modalidade').value, y, 40);
+    y = criarCampo('Gênero:', document.getElementById('genero').value, y, 40);
+    y = criarCampo('Número da Sala:', document.getElementById('numeroSala').value, y, 40);
+    
+    // Verificar se precisa de nova página para as observações
+    if (y + 40 > doc.internal.pageSize.getHeight()) {
+        doc.addPage();
+        y = margin;
+    }
+    
+    // Observações
+    y += 5; // Espaço adicional
+    y = criarCabecalhoSecao('OBSERVAÇÕES', y);
+    
+    const observacoes = document.getElementById('observacoes').value || 'Nenhuma observação.';
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(200, 200, 200);
+    doc.rect(margin, y, contentWidth, 30, 'FD');
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    
+    // Adicionar texto de observações com quebra de linha
+    const textLines = doc.splitTextToSize(observacoes, contentWidth - 4);
+    for (let i = 0; i < textLines.length; i++) {
+        if (y + (i * 5) + 5 > doc.internal.pageSize.getHeight()) {
+            doc.addPage();
+            y = margin;
+            i = 0; // Reiniciar para a nova página
+        }
+        doc.text(textLines[i], margin + 2, y + (i + 1) * 5);
+    }
+    
+    y += Math.max(30, textLines.length * 5 + 5);
+    
+    // Rodapé com data e assinatura
+    y += 10;
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    
+    doc.setFontSize(9);
+    doc.text(`Documento gerado em: ${dataAtual}`, margin, y);
+    
+    const larguraAssinatura = 70;
+    doc.line(pageWidth - margin - larguraAssinatura, y + 10, pageWidth - margin, y + 10);
+    doc.text('Assinatura do Responsável', pageWidth - margin - larguraAssinatura/2, y + 15, { align: 'center' });
+    
+    // Adicionar número de página
+    const totalPaginas = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Página ${i} de ${totalPaginas}`, pageWidth - margin, doc.internal.pageSize.getHeight() - 10);
+    }
+    
+    // Salvar o PDF
+    doc.save('Coleta_de_Classe_ACDA.pdf');
+}
+</script></body>
+</html>
